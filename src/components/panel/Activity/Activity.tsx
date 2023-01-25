@@ -1,4 +1,4 @@
-import { BodyLayout, Button, Card, FlexLayout, Grid, Modal, Select, TextField, TextStyles } from "@cedcommerce/ounce-ui"
+import { BodyLayout, Button, Card, FlexLayout, Grid, Modal } from "@cedcommerce/ounce-ui"
 import { useMemo, useState } from "react"
 import useGetRequests from "../../../hooks/getRequests"
 import Pagination from "./Pagination"
@@ -66,7 +66,7 @@ function Activity() {
             align: 'center',
             dataIndex: 'role',
             key: 'role',
-            title: <FilterSelect title="Role" allFilters={allFilters} setAllFilters={setAllFilters} code="1" objKey="action_type" options={roleOptions} />,
+            title: <FilterSelect title="Role" allFilters={allFilters} setAllFilters={setAllFilters} code="1" objKey="username" options={roleOptions} />,
             width: 50
         },
         {

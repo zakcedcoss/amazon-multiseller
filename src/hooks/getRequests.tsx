@@ -11,8 +11,12 @@ const useGetRequests = (url: string, headers: any = {}) => {
     async function getRequest() {
         setIsLoading(true);
         const response = await fetch(BASE_URL + url, {
-            method: "GET",
-            headers: { ...headers, "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}` },
+            headers: {
+                ...headers, "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}`, "Ced-Source-Id": undefined,
+                "Ced-Source-Name": "",
+                "Ced-Target-Id": "",
+                "Ced-Target-Name": ""
+            },
         })
         const fetchedData = await response.json();
         if (fetchedData) {

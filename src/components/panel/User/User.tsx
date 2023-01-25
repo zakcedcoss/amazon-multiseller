@@ -1,7 +1,6 @@
-import { Badge, BodyLayout, Button, Card, CheckBox, FlexLayout, Grid, Select, TextField, TextStyles } from "@cedcommerce/ounce-ui";
+import { Badge, BodyLayout, Button, Card, CheckBox, FlexLayout, Grid } from "@cedcommerce/ounce-ui";
 import { useEffect, useMemo, useState } from "react";
 import { MoreVertical } from "react-feather";
-import { DateRangePicker } from "rsuite";
 import { appPlanOptions, filterOptions, installOptions, options, prepaidOptions } from "../../../constants";
 import useGetRequests from "../../../hooks/getRequests";
 import Pagination from "../Activity/Pagination";

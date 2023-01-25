@@ -34,7 +34,7 @@ function SyncUser() {
 
     const { data, isLoading, errors } = useGetRequests(`/frontend/adminpanelamazonmulti/getRefineUsersData?target_marketplace=all&count=${countPerPage}&activePage=${activePage}${filterQuery}`);
 
-    const { data: totalCount, isLoading: totalCountLoading, errors: totalCountErrors } = useGetRequests(`/frontend/adminpanelamazonmulti/getRefineFilteredCount?target_marketplace=all&count=${countPerPage}&activePage=${activePage}`)
+    const { data: totalCount, isLoading: totalCountLoading, errors: totalCountErrors } = useGetRequests(`/frontend/adminpanelamazonmulti/getRefineFilteredCount?target_marketplace=all&count=${countPerPage}&activePage=${activePage}${filterQuery}`)
 
     const dataSource = useMemo(() => {
         return data?.data?.rows?.map((d: any) => {
@@ -306,9 +306,9 @@ function SyncUser() {
                         />
                     </FlexLayout>
                 </Card>
-                <Card>
+                {viewColumns && <Card>
                     <FlexLayout spacing="tight">
-                        {viewColumns && columns.map(col => {
+                        {columns.map(col => {
                             return (
                                 <CheckBox
                                     checked={hiddenColumns[col.key]}
@@ -323,7 +323,7 @@ function SyncUser() {
                             )
                         })}
                     </FlexLayout>
-                </Card>
+                </Card>}
                 <Grid loading={isLoading} dataSource={dataSource} columns={modifiedCols} scrollX={1500} />
             </FlexLayout>
         </BodyLayout>
