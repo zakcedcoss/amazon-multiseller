@@ -1,7 +1,7 @@
 import { BodyLayout, Button, Card, FlexLayout, FormElement, Select, TextField, Toast, ToastWrapper } from "@cedcommerce/ounce-ui";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getToken, TOKEN } from "../environments/utils";
+import { TOKEN } from "../environments/utils";
 import { passwordValidator, usernameValidator } from "../validator/inputValidator";
 
 interface InputType {
@@ -12,18 +12,9 @@ interface InputType {
 
 function Auth() {
   const navigate = useNavigate();
-  const [inputs, setInputs] = useState<InputType>({
-    username: "",
-    password: "",
-    option: "demo"
-  });
-  const [errorMessages, setErrorMessages] = useState<{
-    [key: string]: [boolean, string];
-  }>({});
-  const [errors, setErrors] = useState<{ active: boolean; message: string }>({
-    active: false,
-    message: "",
-  });
+  const [inputs, setInputs] = useState<InputType>({ username: "", password: "", option: "demo" });
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: [boolean, string] }>({});
+  const [errors, setErrors] = useState<{ active: boolean; message: string }>({ active: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   async function postRequest() {
@@ -31,11 +22,7 @@ function Auth() {
     const response = await fetch("https://multi-account.sellernext.com/home/public/user/login", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}` },
-      body: JSON.stringify({
-        "target_marketplace": "all",
-        "username": inputs.username,
-        "password": inputs.password
-      })
+      body: JSON.stringify({ "target_marketplace": "all", "username": inputs.username, "password": inputs.password })
     })
     const fetchedData = await response.json();
     if (fetchedData) {
@@ -59,34 +46,20 @@ function Auth() {
   }
 
   useEffect(() => {
-    setInputs({
-      username: "",
-      password: "",
-      option: "demo"
-    });
+    setInputs({ username: "", password: "", option: "demo" });
     setErrorMessages({});
-    setErrors({
-      active: false,
-      message: "",
-    });
+    setErrors({ active: false, message: "" });
   }, []);
 
   const handleChange = (value: string, name: string) => {
     if (name === "username") {
       const errMsg = usernameValidator(value);
-      setErrorMessages({
-        ...errorMessages,
-        username: [errMsg.active, errMsg.message],
-      });
+      setErrorMessages({ ...errorMessages, username: [errMsg.active, errMsg.message] });
     }
     if (name === "password") {
       const errMsg = passwordValidator(value);
-      setErrorMessages({
-        ...errorMessages,
-        password: [errMsg.active, errMsg.message],
-      });
+      setErrorMessages({ ...errorMessages, password: [errMsg.active, errMsg.message] });
     }
-
     setInputs({ ...inputs, [name]: value.toLocaleLowerCase() });
   };
 
