@@ -1,4 +1,4 @@
-import { Badge, BodyLayout, Button, Card, FlexLayout, Grid, Select, TextStyles } from "@cedcommerce/ounce-ui";
+import { Badge, BodyLayout, Button, Card, FlexLayout, Grid, Select, Tag, TextStyles } from "@cedcommerce/ounce-ui";
 import { useMemo, useState } from "react";
 import { filterOptions } from "../../../constants";
 import useGetRequests from "../../../hooks/getRequests";
@@ -25,6 +25,24 @@ function MigrationStatus() {
         })
         return query;
     }, [allFilters])
+
+    // console.log(allFilters, filterQuery, "aaaaaaaaaaa");
+
+    const allTags = useMemo(() => {
+        let tagsQuery: string[] = [];
+        Object.keys(allFilters).forEach((key) => {
+            if (allFilters[key]?.code?.trim() === "" || allFilters[key]?.code === undefined || allFilters[key]?.value?.trim() === "" || allFilters[key]?.value === undefined) return;
+
+            tagsQuery.push(key + ":" + allFilters[key]?.value);
+        })
+
+        return tagsQuery;
+    }, [allFilters])
+
+    const removeTag = (tagName: string) => {
+        const { [tagName]: _, ...rest } = allFilters;
+        setAllFilters(rest);
+    }
 
     const { data, isLoading, errors } = useGetRequests(`/frontend/adminpanelamazonmulti/getMigrationGrid?target_marketplace=all&count=100&activePage=${activePage}${filterQuery}`)
     const totalCount = useMemo(() => data?.count, [data]);
@@ -140,6 +158,9 @@ function MigrationStatus() {
                         />
                     </FlexLayout>
                 </Card>
+                {allTags.length !== 0 && allTags.map(tag => {
+                    return <Tag key={tag} destroy={() => removeTag(tag.split(":")[0])}>{tag}</Tag>
+                })}
                 <Grid loading={isLoading} scrollX={1300} dataSource={dataSource} columns={columns} />
             </FlexLayout>
         </BodyLayout>

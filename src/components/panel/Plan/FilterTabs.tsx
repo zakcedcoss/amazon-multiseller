@@ -1,22 +1,25 @@
 import { FlexLayout, Select, TextField } from "@cedcommerce/ounce-ui"
+import { useEffect, useState } from "react"
 import { prepaidOptions } from "../../../constants"
 
-interface FilterTabsProps {
-    placeHolder: string
-    advanceFilter?: { value: string, code: number }[]
-    setAdvanceFilter?: React.Dispatch<React.SetStateAction<{
-        value: string;
-        code: number;
-    }[]>>
-}
+function FilterTabs({ placeHolder, advanceFilter, setAdvanceFilter, objKey }: any) {
+    const [searchedText, setSearchedText] = useState("")
 
-function FilterTabs({ placeHolder, advanceFilter, setAdvanceFilter }: FilterTabsProps) {
-
+    useEffect(() => {
+        if (Object.keys(advanceFilter).length === 0) setSearchedText("");
+    }, [advanceFilter])
 
     return (
-        <FlexLayout desktopWidth="100" spacing="tight">
-            <Select options={prepaidOptions} thickness="thin" />
-            <TextField type="number" thickness="thin" placeHolder={placeHolder} />
+        <FlexLayout desktopWidth="100" childWidth="fullWidth" spacing="tight">
+            <Select value={advanceFilter?.[objKey]?.code} options={prepaidOptions} thickness="thin" onChange={(e) => setAdvanceFilter((prev: any) => {
+                return { ...prev, [objKey]: { ...prev[objKey], value: searchedText, code: e } }
+            })} />
+            <TextField value={searchedText} thickness="thin" placeHolder={placeHolder} onChange={(e) => {
+                setSearchedText(e);
+                setAdvanceFilter((prev: any) => {
+                    return { ...prev, [objKey]: { ...prev[objKey], value: e } }
+                })
+            }} />
         </FlexLayout>
     )
 }

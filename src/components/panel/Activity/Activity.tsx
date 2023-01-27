@@ -1,4 +1,4 @@
-import { BodyLayout, Button, Card, FlexLayout, Grid, Modal } from "@cedcommerce/ounce-ui"
+import { BodyLayout, Button, Card, FlexLayout, Grid, Modal, Tag } from "@cedcommerce/ounce-ui"
 import { useMemo, useState } from "react"
 import useGetRequests from "../../../hooks/getRequests"
 import Pagination from "./Pagination"
@@ -29,6 +29,24 @@ function Activity() {
         })
         return query;
     }, [allFilters])
+
+    const allTags = useMemo(() => {
+        let tagsQuery: string[] = [];
+        Object.keys(allFilters).forEach((key) => {
+            if (allFilters[key]?.code?.trim() === "" || allFilters[key]?.code === undefined || allFilters[key]?.value?.trim() === "" || allFilters[key]?.value === undefined) return;
+
+            tagsQuery.push(key + ":" + allFilters[key]?.value);
+        })
+
+        return tagsQuery;
+    }, [allFilters])
+
+    const removeTag = (tagName: string) => {
+        const { [tagName]: _, ...rest } = allFilters;
+        setAllFilters(rest);
+    }
+
+    // console.log(allFilters, filterQuery, "aaaaaaaaaaa");
 
     const { data, isLoading, errors } = useGetRequests(`/frontend/adminpanelamazonmulti/getActivityLogs?target_marketplace=all&count=${countPerPage}&activePage=${activePage}${filterQuery}`)
 
@@ -66,7 +84,7 @@ function Activity() {
             align: 'center',
             dataIndex: 'role',
             key: 'role',
-            title: <FilterSelect title="Role" allFilters={allFilters} setAllFilters={setAllFilters} code="1" objKey="username" options={roleOptions} />,
+            title: <FilterSelect title="Role" allFilters={allFilters} setAllFilters={setAllFilters} code="1" objKey="role" options={roleOptions} />,
             width: 50
         },
         {
@@ -134,6 +152,9 @@ function Activity() {
                             }} />
                     </FlexLayout>
                 </Card>
+                {allTags.length !== 0 && allTags.map(tag => {
+                    return <Tag key={tag} destroy={() => removeTag(tag.split(":")[0])}>{tag}</Tag>
+                })}
                 <Grid
                     loading={isLoading}
                     columns={columns}

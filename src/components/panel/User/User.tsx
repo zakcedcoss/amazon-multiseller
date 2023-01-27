@@ -1,4 +1,4 @@
-import { Badge, BodyLayout, Button, Card, CheckBox, FlexLayout, Grid } from "@cedcommerce/ounce-ui";
+import { Badge, BodyLayout, Button, Card, CheckBox, FlexLayout, Grid, Tag } from "@cedcommerce/ounce-ui";
 import { useEffect, useMemo, useState } from "react";
 import { MoreVertical } from "react-feather";
 import { appPlanOptions, filterOptions, installOptions, options, prepaidOptions } from "../../../constants";
@@ -29,6 +29,23 @@ function User() {
         })
         return query;
     }, [allFilters])
+
+    const allTags = useMemo(() => {
+        let tagsQuery: string[] = [];
+        Object.keys(allFilters).forEach((key) => {
+            if (allFilters[key]?.code?.trim() === "" || allFilters[key]?.code === undefined || allFilters[key]?.value?.trim() === "" || allFilters[key]?.value === undefined) return;
+
+            tagsQuery.push(key + ":" + allFilters[key]?.value);
+        })
+
+        return tagsQuery;
+    }, [allFilters])
+
+    const removeTag = (tagName: string) => {
+        const { [tagName]: _, ...rest } = allFilters;
+        setAllFilters(rest);
+    }
+    // console.log({ filterQuery }, "aaaaaaaaaaa");
 
     const { data, isLoading, errors } = useGetRequests(`/frontend/adminpanelamazonmulti/getUsersData?target_marketplace=all&count=${countPerPage}&activePage=${activePage}${filterQuery}`)
     const totalCount = useMemo(() => data?.count, [data]);
@@ -263,9 +280,12 @@ function User() {
                         />
                     </FlexLayout>
                 </Card>
-                <Card>
+                {allTags.length !== 0 && allTags.map(tag => {
+                    return <Tag key={tag} destroy={() => removeTag(tag.split(":")[0])}>{tag}</Tag>
+                })}
+                {viewColumns && <Card>
                     <FlexLayout spacing="tight">
-                        {viewColumns && columns.map(col => {
+                        {columns.map(col => {
                             return (
                                 <CheckBox
                                     checked={hiddenColumns[col.key]}
@@ -280,7 +300,7 @@ function User() {
                             )
                         })}
                     </FlexLayout>
-                </Card>
+                </Card>}
                 <Grid loading={isLoading} dataSource={dataSource} columns={modifiedCols} scrollX={1500} />
             </FlexLayout>
         </BodyLayout>
