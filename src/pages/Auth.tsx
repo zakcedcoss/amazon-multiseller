@@ -1,22 +1,8 @@
-import {
-  BodyLayout,
-  Button,
-  Card,
-  FlexLayout,
-  FormElement,
-  Select,
-  TextField,
-  Toast,
-  ToastWrapper,
-} from "@cedcommerce/ounce-ui";
+import { BodyLayout, Button, Card, FlexLayout, FormElement, Select, TextField, Toast, ToastWrapper } from "@cedcommerce/ounce-ui";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL, TOKEN } from "../environments/utils";
-import usePostRequests from "../hooks/postRequests";
-import {
-  passwordValidator,
-  usernameValidator,
-} from "../validator/inputValidator";
+import { useNavigate } from "react-router-dom";
+import { getToken, TOKEN } from "../environments/utils";
+import { passwordValidator, usernameValidator } from "../validator/inputValidator";
 
 interface InputType {
   username: string;
@@ -38,43 +24,52 @@ function Auth() {
     active: false,
     message: "",
   });
-  // auth
-  const [isAuth, setIsAuth] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-
-  if (isAuth) {
-    navigate("/panel/dashboard", { replace: true });
-  }
-
-
-  async function postRequest(url: string, bodyData: any) {
-    const response = await fetch(BASE_URL + url, {
+  async function postRequest() {
+    setIsLoading(true)
+    const response = await fetch("https://multi-account.sellernext.com/home/public/user/login", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}` },
-      body: JSON.stringify({ ...bodyData })
+      body: JSON.stringify({
+        "target_marketplace": "all",
+        "username": inputs.username,
+        "password": inputs.password
+      })
     })
     const fetchedData = await response.json();
     if (fetchedData) {
       if (fetchedData.success) {
-        setIsAuth(true)
+        try {
+          const token = fetchedData.data.token;
+          sessionStorage.setItem("token", token)
+          setErrors({ active: false, message: "" });
+          setIsLoading(false);
+          navigate("/panel/dashboard", { replace: true })
+        } catch (error) {
+          console.log(error);
+          setIsLoading(false);
+          setErrors({ active: true, message: "Something went wrong. Please try again." });
+        }
+      } else {
+        setIsLoading(false);
+        setErrors({ active: true, message: "Username does not exists !!!" });
       }
-    } else {
-      // handle error
     }
   }
 
-  // useEffect(() => {
-  //   setInputs({
-  //     username: "",
-  //     password: "",
-  //     option: "demo"
-  //   });
-  //   setErrorMessages({});
-  //   setErrors({
-  //     active: false,
-  //     message: "",
-  //   });
-  // }, [auth]);
+  useEffect(() => {
+    setInputs({
+      username: "",
+      password: "",
+      option: "demo"
+    });
+    setErrorMessages({});
+    setErrors({
+      active: false,
+      message: "",
+    });
+  }, []);
 
   const handleChange = (value: string, name: string) => {
     if (name === "username") {
@@ -105,17 +100,7 @@ function Auth() {
       return;
     }
 
-    // const authData = postRequest("/user/login", {
-    //   target_marketplace: "all",
-    //   username: inputs?.username,
-    //   password: inputs?.password
-    // });
-
-    // if(authData.success) {
-    //   setIsAuth(true)
-    // } else {
-    //   setIsAuth(false)
-    // }
+    postRequest();
   };
 
   return (
@@ -182,7 +167,7 @@ function Auth() {
                   value={inputs.password}
                 />
                 <hr />
-                <Button length="fullBtn" onClick={handleSubmit}>Login</Button>
+                <Button loading={isLoading} length="fullBtn" onClick={handleSubmit}>Login</Button>
               </FlexLayout>
             </FormElement>
           </Card>

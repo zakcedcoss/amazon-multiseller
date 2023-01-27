@@ -8,7 +8,7 @@ import {
 } from "@cedcommerce/ounce-ui";
 
 import { Outlet, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Activity, DollarSign, Home, Lock, RefreshCcw, User } from "react-feather";
 
 function Layout() {
@@ -18,15 +18,22 @@ function Layout() {
   const [path, setPath] = useState("/panel/dashboard")
 
   const handleUserClick = () => {
+    sessionStorage.removeItem("token");
     navigate("/auth/login", { replace: true });
   };
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token")
+    if (!token) {
+      navigate("/auth/login", { replace: true })
+    }
+  }, [path])
 
   return (
     <>
       <Topbar
         connectRight={
           <FlexLayout spacing="tight">
-
             <Popover
               open={popoverOpen}
               activator={<Button type="Plain" icon={<Avatar />} onClick={() => setPopoverOpen(prev => !prev)}>Admin</Button>}
@@ -60,13 +67,13 @@ function Layout() {
           {
             content: "Activity",
             icon: <Activity />,
-            id: "dashboard",
+            id: "activity",
             path: "/panel/activity",
           },
           {
             content: "Manage User Access",
             icon: <Lock />,
-            id: "userAccess",
+            id: "access",
             path: "/panel/userAccess",
           },
           {

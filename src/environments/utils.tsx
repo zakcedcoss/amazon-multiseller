@@ -1,2 +1,7 @@
 export const BASE_URL = "https://multi-account.sellernext.com/home/public";
 export const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI5MGRiYjIzOGUyOWExYjIzMzYwY2E5Iiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjc0ODIyMDQ1LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzZDM4OTVkZDA2OTcxMTVkYzA2MDhkOSJ9.QeVyTX-Qr0KSEV5dXp1sDVtlx-WKpDuXfCyNqPDFEHyXaW5Iz0_5E3u3B6XEbSF8DvV56C-YYIU7mqzsJMNawRteVMEwYGNdp_qhyIgHrToq-idPkEhQ5PYUFsvhp039WZ6I_OGMi0IyQsM-IxBWyliq_Q1bQvnKU1JibSZ55JPgf2nbTfnzgEzdQKKxVytmrLnPH9yAkf-xDwlTfvW2lftOYsTnNFgTWRyFUvKczmCLJ355rzNKi8UtxCeJefE-9Su1wSzHDwA-jVLTvdX6_5SdWXl8ELGQYC-2XKzctKfO4tiVAde-MJdCA9D7Zz2YQ_lI9vN6Q_N_0XwbAbVCgg";
+
+export const getToken = () => {
+    const token = sessionStorage.getItem("token");
+    return token;
+}

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { BASE_URL, TOKEN } from "../environments/utils";
-
+import { BASE_URL, getToken } from "../environments/utils";
 
 const useGetRequests = (url: string, headers: any = {}) => {
-
     const [data, setData] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState<[boolean, string]>([false, ""])
@@ -12,7 +10,7 @@ const useGetRequests = (url: string, headers: any = {}) => {
         setIsLoading(true);
         const response = await fetch(BASE_URL + url, {
             headers: {
-                ...headers, "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}`, "Ced-Source-Id": undefined,
+                ...headers, "Content-Type": "application/json", Authorization: `Bearer ${getToken()}`, "Ced-Source-Id": undefined,
                 "Ced-Source-Name": "",
                 "Ced-Target-Id": "",
                 "Ced-Target-Name": ""
