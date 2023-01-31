@@ -40,7 +40,7 @@ function Auth() {
         }
       } else {
         setIsLoading(false);
-        setErrors({ active: true, message: "Username does not exists !!!" });
+        setErrors({ active: true, message: fetchedData.message });
       }
     }
   }
